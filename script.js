@@ -28,8 +28,11 @@ $(document).ready(function() {
   });
   function addPalette(json) {
     var obj = $.parseJSON(json);
+    var html = '<ul>';
     $.each(obj, function(a) {
-      $('#palette div').append('<ul><li class="palette" style="width: 50px; height: 50px; background:'+obj[a]+';"><span>'+obj[a]+'</span></li></ul>');
+      html += '<li class="palette" style="width: 50px; height: 50px; background: '+obj[a]+';"><span>'+obj[a]+'</span></li>';
     });
+    html += '</ul>';
+    $('#palette div').append(html);
   }
 });

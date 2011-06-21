@@ -1,14 +1,15 @@
 <?php
 include_once('Processor.class.php');
-$obj = new Processor();
+
 switch($_POST['action']) {
   case 'pasted':
     $styles = $_POST['styles'];
+    $P = Processor::fromPaste($styles);
   break;
   case 'url':
     $url = $_POST['url'];
-    $styles = file_get_contents($url);
+    $P = Processor::fromURL('http://google.com');
   break;
 }
-print $obj->process($styles);
+print $P->getPalette();
 ?>
