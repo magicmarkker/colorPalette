@@ -8,7 +8,7 @@ switch($_POST['action']) {
   break;
   case 'url':
     $url = $_POST['url'];
-    $P = Processor::fromURL('http://google.com');
+    $P = Processor::fromURL($url);
   break;
 }
 print $P->getPalette();
