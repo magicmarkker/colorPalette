@@ -6,7 +6,7 @@ class Processor {
 
   function __construct( $styles, $url = false ){
     $this->styles = $url ? file_get_contents( $styles ) : $styles;
-
+    $this->colors = array();
     $this->process();
   }
 
@@ -30,25 +30,26 @@ class Processor {
   }
 
   public function removeDupes($matches) {
-
     foreach ($matches as $match) {
       $c[] = $this->hex2RGB($match[0], true);
     }
     $c = array_unique($c);
-    $c = $this->rgb2Hex($c);
-    $this->colors = $c;
+    $d = $this->rgb2Hex($c);
+    $this->colors = $d;
   }
 
   private function rgb2Hex($rgb) {
     $newcolors = array();
     foreach ($rgb as $color) {
-      list($r, $g, $b) = explode(',', $color);
-      $hex = "#";
-      $hex.= str_pad(dechex($r), 2, "0", STR_PAD_LEFT);
-      $hex.= str_pad(dechex($g), 2, "0", STR_PAD_LEFT);
-      $hex.= str_pad(dechex($b), 2, "0", STR_PAD_LEFT);
-      
-      $newcolors[$hex] = $hex;
+      if (!empty($color)) {
+        list($r, $g, $b) = explode(',', $color);
+        $hex = "#";
+        $hex.= str_pad(dechex($r), 2, "0", STR_PAD_LEFT);
+        $hex.= str_pad(dechex($g), 2, "0", STR_PAD_LEFT);
+        $hex.= str_pad(dechex($b), 2, "0", STR_PAD_LEFT);
+
+        $newcolors[$hex] = $hex;
+      }
     }
     return $newcolors;
   }

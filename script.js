@@ -28,6 +28,7 @@ $(document).ready(function() {
   });
   function addPalette(json) {
     var obj = $.parseJSON(json);
+    $('#palette div').html('');
     var html = '<ul>';
     $.each(obj, function(a) {
       html += '<li class="palette" style="width: 50px; height: 50px; background: '+obj[a]+';"><span>'+obj[a]+'</span></li>';
