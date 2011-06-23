@@ -22,7 +22,8 @@ class Processor {
 
   private function process(){
       preg_match_all($this->regex, $this->styles, $matches, PREG_SET_ORDER); //get all matches
-      $this->removeDupes($matches);
+      $c = $this->removeDupes($matches);
+      $this->sortByHue($c);
   }
 
   public function getPalette(){
@@ -34,6 +35,9 @@ class Processor {
       $c[] = $this->hex2RGB($match[0], true);
     }
     $c = array_filter($c);
+    return $c;
+  }
+  public function sortByHue($c) {
     foreach ($c as $color) {
       list($r, $g, $b) = explode(',', $color);
       $hsv[] = $this->rgbtohsv($r,$g,$b);
@@ -41,7 +45,6 @@ class Processor {
     $d = $this->sortColors($hsv);
     $this->colors = $d;
   }
-
   private function rgb2Hex($rgb) {
     $newcolors = array();
     foreach ($rgb as $color) {
