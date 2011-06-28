@@ -1,13 +1,16 @@
 <?php
+include('simple_html_dom.php');
 class Processor {
   protected $styles;
+  protected $styles_glob;
   private $colors;
   private $regex = '(#([0-9A-Fa-f]{3,6})\b)';
+  private $site_regex = '';
 
   function __construct( $styles, $url = false ){
-    $this->styles = $url ? file_get_contents( $styles ) : $styles;
+    $this->styles = $url ? $styles : $styles;
     $this->colors = array();
-    $this->process();
+    $this->process($url);
   }
 
   public static function fromURL( $url ){
@@ -20,24 +23,27 @@ class Processor {
     return $tmp;
   }
 
-  private function process(){
-      preg_match_all($this->regex, $this->styles, $matches, PREG_SET_ORDER); //get all matches
-      $c = $this->removeDupes($matches);
-      $this->sortByHue($c);
+  private function process($url){
+    if ($url) {
+      $this->get_css_files($this->styles);
+    }
+    preg_match_all($this->regex, $this->styles, $matches, PREG_SET_ORDER); //get all matches
+    $c = $this->removeDupes($matches);
+    $this->sortByHue($c);
   }
 
   public function getPalette(){
     return json_encode( $this->colors );
   }
 
-  public function removeDupes($matches) {
+  private function removeDupes($matches) {
     foreach ($matches as $match) {
       $c[] = $this->hex2RGB($match[0], true);
     }
     $c = array_filter($c);
     return $c;
   }
-  public function sortByHue($c) {
+  private function sortByHue($c) {
     foreach ($c as $color) {
       list($r, $g, $b) = explode(',', $color);
       $hsv[] = $this->rgbtohsv($r,$g,$b);
@@ -45,6 +51,17 @@ class Processor {
     $d = $this->sortColors($hsv);
     $this->colors = $d;
   }
+
+  private function get_css_files($page) {
+    $html = file_get_html($page);
+    foreach($html->find('link') as $element) {
+      if ($element->type == 'text/css') {
+        $this->styles_glob .= file_get_contents($page .'/'. $element->href);
+      }
+    }
+    $this->styles = $this->styles_glob;
+  }
+
   private function rgb2Hex($rgb) {
     $newcolors = array();
     foreach ($rgb as $color) {

@@ -61,7 +61,7 @@
                          </form>
                        </section>
                       <section id="web_address">
-                        <p>Enter the url to a .css file.</p>
+                        <p>Enter the url to a website.</p>
                         <form name="web" id="web" method="post" enctype="multipart/form-data">
                          <input type="text" name="weblink" id="weblink" /><br />
                          <input type="submit" value="Generate" />
