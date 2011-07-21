@@ -56,7 +56,11 @@ class Processor {
     $html = file_get_html($page);
     foreach($html->find('link') as $element) {
       if ($element->type == 'text/css') {
-        $this->styles_glob .= file_get_contents($page .'/'. $element->href);
+        if (strstr($element->href, 'http')) {
+          $this->styles_glob .= file_get_contents($element->href);
+        } else {
+          $this->styles_glob .= file_get_contents($page .'/'. $element->href);
+        }
       }
     }
     $this->styles = $this->styles_glob;
